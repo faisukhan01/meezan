@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../core/theme.dart';
 import '../state/app_state.dart';
 import '../widgets/common.dart';
+import 'mpin.dart';
 import 'shell.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -26,6 +27,16 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  void _routeAfterAuth() {
+    final AppState app = context.read<AppState>();
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute<void>(
+        builder: (_) =>
+            app.mpin == null ? const CreateMpinScreen() : const Shell(),
+      ),
+    );
+  }
+
   Future<void> _doLogin() async {
     if (_busy) return;
     setState(() => _busy = true);
@@ -33,9 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final bool ok = await app.login(_user.text, _pass.text);
     if (!mounted) return;
     if (ok) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute<void>(builder: (_) => const Shell()),
-      );
+      _routeAfterAuth();
     } else {
       setState(() => _busy = false);
       showSnack(
@@ -160,14 +169,30 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 8),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              TextButton(
-                                onPressed: () => showSnack(
-                                  context,
-                                  'Please visit your branch or call 111-331-331 (demo).',
+                              Expanded(
+                                child: Wrap(
+                                  spacing: 0,
+                                  runSpacing: 0,
+                                  children: [
+                                    TextButton(
+                                      onPressed: () => showSnack(
+                                        context,
+                                        'Username recovery: visit any Meezan ATM or branch (demo).',
+                                      ),
+                                      child: const Text('Forgot Username?',
+                                          style: TextStyle(fontSize: 12.5)),
+                                    ),
+                                    TextButton(
+                                      onPressed: () => showSnack(
+                                        context,
+                                        'Password reset: call 111-331-331 or visit a branch (demo).',
+                                      ),
+                                      child: const Text('Forgot Password?',
+                                          style: TextStyle(fontSize: 12.5)),
+                                    ),
+                                  ],
                                 ),
-                                child: const Text('Forgot password?'),
                               ),
                               if (app.biometricsEnabled)
                                 Tooltip(
@@ -179,10 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           _user.text, 'demo1234');
                                       if (!mounted) return;
                                       if (ok) {
-                                        Navigator.of(context).pushReplacement(
-                                          MaterialPageRoute<void>(
-                                              builder: (_) => const Shell()),
-                                        );
+                                        _routeAfterAuth();
                                       }
                                     },
                                     child: Container(

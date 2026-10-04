@@ -5,6 +5,7 @@ import '../core/theme.dart';
 import '../state/app_state.dart';
 import '../widgets/common.dart';
 import 'login.dart';
+import 'mpin.dart';
 import 'shell.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -21,10 +22,16 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(milliseconds: 2400), () {
       if (!mounted) return;
       final AppState app = context.read<AppState>();
+      final Widget next;
+      if (!app.loggedIn) {
+        next = const LoginScreen();
+      } else if (app.mpin == null) {
+        next = const CreateMpinScreen();
+      } else {
+        next = const MpinEntryScreen();
+      }
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute<void>(
-          builder: (_) => app.loggedIn ? const Shell() : const LoginScreen(),
-        ),
+        MaterialPageRoute<void>(builder: (_) => next),
       );
     });
   }

@@ -17,6 +17,7 @@ class AppState extends ChangeNotifier {
   ThemeMode themeMode = ThemeMode.light;
   bool biometricsEnabled = true;
   bool notificationsEnabled = true;
+  String? mpin;
 
   late List<Account> accounts;
   late List<Txn> txns;
@@ -42,6 +43,7 @@ class AppState extends ChangeNotifier {
           : tm == 'system'
               ? ThemeMode.system
               : ThemeMode.light;
+      mpin = p.getString('mpin');
     } catch (_) {
       // Preferences unavailable (first run / web) — keep defaults.
     }
@@ -62,6 +64,11 @@ class AppState extends ChangeNotifier {
                 ? 'system'
                 : 'light',
       );
+      if (mpin != null) {
+        await p.setString('mpin', mpin!);
+      } else {
+        await p.remove('mpin');
+      }
     } catch (_) {}
   }
 
@@ -79,6 +86,12 @@ class AppState extends ChangeNotifier {
   Future<void> logout() async {
     _loggedIn = false;
     await _persist();
+    notifyListeners();
+  }
+
+  void setMpin(String value) {
+    mpin = value;
+    _persist();
     notifyListeners();
   }
 
