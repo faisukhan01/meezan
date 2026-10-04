@@ -1,5 +1,12 @@
 include: package:flutter_lints/flutter.yaml
 
+analyzer:
+  exclude:
+    # The CI scaffold (`flutter create .`) generates a default widget_test.dart
+    # that references a non-existent MyApp class; tests are not part of this
+    # project's QA gate, so keep it out of static analysis.
+    - test/**
+
 linter:
   rules:
     unnecessary_const: false

@@ -6,7 +6,6 @@ import '../state/app_state.dart';
 import '../widgets/common.dart';
 import 'login.dart';
 import 'mpin.dart';
-import 'shell.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
