@@ -146,15 +146,45 @@ class _AccountRow extends StatelessWidget {
   }
 }
 
-class AccountDetailPage extends StatelessWidget {
+class AccountDetailPage extends StatefulWidget {
   final Account account;
   const AccountDetailPage({super.key, required this.account});
 
   @override
+  State<AccountDetailPage> createState() => _AccountDetailPageState();
+}
+
+class _AccountDetailPageState extends State<AccountDetailPage> {
+  final TextEditingController _search = TextEditingController();
+  String _filter = 'all'; // all | in | out
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final AppState app = context.watch<AppState>();
-    final List<Txn> txns = app.txnsFor(account.id);
+    final Account account = widget.account;
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
+    List<Txn> txns = app.txnsFor(account.id);
+    final String q = _search.text.trim().toLowerCase();
+    if (q.isNotEmpty) {
+      txns = txns
+          .where((Txn t) =>
+              t.title.toLowerCase().contains(q) ||
+              t.ref.toLowerCase().contains(q) ||
+              t.channel.toLowerCase().contains(q))
+          .toList();
+    }
+    if (_filter == 'in') {
+      txns = txns.where((Txn t) => t.type == TxnType.credit).toList();
+    } else if (_filter == 'out') {
+      txns = txns.where((Txn t) => t.type == TxnType.debit).toList();
+    }
 
     return Scaffold(
       appBar: AppBar(title: Text(account.title)),
@@ -197,6 +227,53 @@ class AccountDetailPage extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           SectionHeader(title: 'Mini Statement'),
+          // ----- Search + filter chips (real-app statement controls) -----
+          TextField(
+            controller: _search,
+            onChanged: (_) => setState(() {}),
+            decoration: InputDecoration(
+              hintText: 'Search transactions',
+              prefixIcon: const Icon(Icons.search_rounded, color: MColors.subtle),
+              suffixIcon: _search.text.isEmpty
+                  ? null
+                  : IconButton(
+                      icon: const Icon(Icons.close_rounded,
+                          size: 18, color: MColors.subtle),
+                      onPressed: () {
+                        _search.clear();
+                        setState(() {});
+                      },
+                    ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              _FilterChip(
+                label: 'All',
+                selected: _filter == 'all',
+                onTap: () => setState(() => _filter = 'all'),
+              ),
+              const SizedBox(width: 8),
+              _FilterChip(
+                label: 'Money In',
+                selected: _filter == 'in',
+                onTap: () => setState(() => _filter = 'in'),
+              ),
+              const SizedBox(width: 8),
+              _FilterChip(
+                label: 'Money Out',
+                selected: _filter == 'out',
+                onTap: () => setState(() => _filter = 'out'),
+              ),
+              const Spacer(),
+              Text(
+                '${txns.length} txn${txns.length == 1 ? '' : 's'}',
+                style: const TextStyle(fontSize: 11.5, color: MColors.subtle),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
           Container(
             decoration: BoxDecoration(
               color: isDark ? MColors.darkCard : Colors.white,
@@ -204,12 +281,14 @@ class AccountDetailPage extends StatelessWidget {
               border: Border.all(color: Theme.of(context).dividerColor),
             ),
             child: txns.isEmpty
-                ? const Padding(
-                    padding: EdgeInsets.all(24),
+                ? Padding(
+                    padding: const EdgeInsets.all(24),
                     child: Center(
                       child: Text(
-                        'No transactions yet',
-                        style: TextStyle(color: MColors.subtle),
+                        q.isEmpty && _filter == 'all'
+                            ? 'No transactions yet'
+                            : 'No matching transactions',
+                        style: const TextStyle(color: MColors.subtle),
                       ),
                     ),
                   )
@@ -221,6 +300,43 @@ class AccountDetailPage extends StatelessWidget {
                   ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _FilterChip extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+  const _FilterChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: selected ? MColors.green : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: selected ? MColors.green : Theme.of(context).dividerColor,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 11.5,
+            fontWeight: FontWeight.w700,
+            color: selected ? Colors.white : MColors.subtle,
+          ),
+        ),
       ),
     );
   }

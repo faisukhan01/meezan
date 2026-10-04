@@ -273,6 +273,177 @@ class BalanceCard extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
+// Swipeable account page card (Home carousel — real-app style)
+// ---------------------------------------------------------------------------
+
+class AccountPageCard extends StatelessWidget {
+  final Account account;
+  final VoidCallback onViewDetails;
+  const AccountPageCard({
+    super.key,
+    required this.account,
+    required this.onViewDetails,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final AppState app = context.watch<AppState>();
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.fromLTRB(18, 12, 6, 12),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [MColors.green, MColors.greenDark],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: MColors.green.withOpacity(0.30),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            right: -26,
+            top: -30,
+            child: CircleAvatar(
+              radius: 56,
+              backgroundColor: MColors.gold.withOpacity(0.12),
+            ),
+          ),
+          Positioned(
+            left: 40,
+            bottom: -48,
+            child: CircleAvatar(
+              radius: 44,
+              backgroundColor: Colors.white.withOpacity(0.06),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const MeezanEmblem(size: 26),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      account.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 14.5,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: app.toggleBalanceHidden,
+                    icon: Icon(
+                      app.balanceHidden
+                          ? Icons.visibility_off_rounded
+                          : Icons.visibility_rounded,
+                      color: Colors.white.withOpacity(0.9),
+                      size: 19,
+                    ),
+                    tooltip: 'Toggle balance',
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 2),
+                child: Text(
+                  '${account.type} • ${maskAccount(account.number)}',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.75),
+                    fontSize: 11.5,
+                  ),
+                ),
+              ),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(left: 2),
+                child: Text(
+                  app.balanceHidden
+                      ? '${account.currency} ••••••'
+                      : '${account.currency} ${money(account.balance, withSymbol: false)}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 2),
+              Padding(
+                padding: const EdgeInsets.only(left: 2),
+                child: Text(
+                  'Available Balance',
+                  style: TextStyle(
+                    color: MColors.gold.withOpacity(0.95),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.4,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      border:
+                          Border.all(color: MColors.gold.withOpacity(0.6)),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      account.currency,
+                      style: const TextStyle(
+                        color: MColors.gold,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  TextButton(
+                    onPressed: onViewDetails,
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      textStyle: const TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.w700),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('Account Details'),
+                        Icon(Icons.chevron_right_rounded, size: 16),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Quick action
 // ---------------------------------------------------------------------------
 

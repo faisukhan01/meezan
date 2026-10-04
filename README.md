@@ -24,10 +24,10 @@ state management and CI/CD.
 | Area | What's included |
 |---|---|
 | Splash | White branded splash with gold-seal lockup, green footer strip |
-| Auth | Username/password login (demo), Forgot Username / Forgot Password links, biometric shortcut |
+| Auth | Username/password login (demo), **English / اردو language toggle**, Forgot Username / Forgot Password links, biometric shortcut |
 | MPIN | Real-app style flow — create + confirm 4-digit MPIN on first login, custom keypad quick-login screen on later launches, "use password instead" fallback |
-| Dashboard | "Assalam-o-Alaikum" header with avatar, multi-account balance card (hide/show), account chips, quick menu: Funds Transfer / Utility Bills / Mobile Top Up / Raast QR / Cheque Book / Tax Certificate |
-| Accounts | Account list, total PKR balance, detail page with IBAN copy, mini statement |
+| Dashboard | "Assalam-o-Alaikum" header with avatar & notification bell, **swipeable account card carousel** with page dots, hide/show balance, quick menu: Funds Transfer / Utility Bills / Mobile Top Up / Raast QR / Cheque Book / Tax Certificate, Roshan Digital Account promo banner |
+| Accounts | Account list, total PKR balance, detail page with IBAN copy, **transaction search + Money In / Money Out filters**, mini statement |
 | Transfers | 3 modes — Within Meezan / Other Banks IBFT (16 banks) / Raast (mobile ID), saved beneficiaries, add beneficiary, purpose of payment, OTP verification (demo OTP `123456`), animated receipt |
 | Payments | 8 categories & 20 billers, consumer-number bill form, mobile top-up for Jazz/Zong/Telenor/Ufone, receipts |
 | Raast QR | Decorative QR card generated with CustomPaint |
@@ -40,7 +40,7 @@ state management and CI/CD.
 - **Provider** — state management (`AppState` with `ChangeNotifier`)
 - **shared_preferences** — session & settings persistence
 - **intl** — PKR currency / date formatting
-- **GitHub Actions** — CI that builds `app-release.apk` on every push to `main`
+- **GitHub Actions** — CI pipeline (**QA gate: `flutter analyze`** → release build) that builds `app-release.apk` on every push to `main`
   and publishes it to the [Releases page](https://github.com/faisukhan01/meezan/releases/latest)
 
 ## Project Structure
@@ -63,7 +63,7 @@ lib/
     ├── accounts.dart  transfer.dart (incl. OTP)  payments.dart
     ├── more.dart (incl. settings)  qr.dart
 android/                       # Flutter Android host (Gradle 8.3 / AGP 8.1 / Kotlin 1.8.22)
-.github/workflows/android.yml  # APK build + release pipeline
+.github/workflows/android.yml  # QA (analyze) + APK build + release pipeline
 ```
 
 ## Build Locally

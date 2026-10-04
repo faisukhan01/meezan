@@ -1,4 +1,4 @@
-name: Build Android APK
+name: QA & Release Build
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   build:
-    name: Build release APK
+    name: Analyze + Build release APK
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -34,6 +34,9 @@ jobs:
 
       - name: Fetch dependencies
         run: flutter pub get
+
+      - name: Static analysis (QA gate)
+        run: flutter analyze --no-fatal-infos
 
       - name: Build release APK
         run: flutter build apk --release

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../core/format.dart';
 import '../core/theme.dart';
 import '../data/models.dart';
 import '../state/app_state.dart';
@@ -20,8 +19,22 @@ String _initials(String name) {
   return (first + second).toUpperCase();
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  PageController? _controller;
+  int _page = 0;
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
 
   void _openNotifications(BuildContext context) {
     showModalBottomSheet<void>(
@@ -76,7 +89,14 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppState app = context.watch<AppState>();
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final Account account = app.selectedAccount;
+
+    // Initialize the carousel controller once, starting on the selected account.
+    if (_controller == null) {
+      final int idx = app.accounts
+          .indexWhere((Account a) => a.id == app.selectedAccountId);
+      _page = idx < 0 ? 0 : idx;
+      _controller = PageController(viewportFraction: 0.93, initialPage: _page);
+    }
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -86,9 +106,9 @@ class HomeScreen extends StatelessWidget {
             // ---------- Header ----------
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: MColors.green,
-                borderRadius: const BorderRadius.only(
+                borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30),
                   bottomRight: Radius.circular(30),
                 ),
@@ -164,60 +184,50 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-            // ---------- Balance card ----------
+            // ---------- Swipeable account carousel ----------
             Transform.translate(
-              offset: const Offset(0, -8),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: BalanceCard(account: account),
-              ),
-            ),
-            Transform.translate(
-              offset: const Offset(0, -8),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: SizedBox(
-                  height: 38,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: app.accounts.length,
-                    itemBuilder: (BuildContext _, int i) {
-                      final Account a = app.accounts[i];
-                      final bool sel = a.id == app.selectedAccountId;
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: ChoiceChip(
-                          label: Text(
-                            '${a.currency} ${maskAccount(a.number)}',
-                            style: TextStyle(
-                              fontSize: 11.5,
-                              fontWeight: FontWeight.w700,
-                              color: sel
-                                  ? Colors.white
-                                  : (isDark ? Colors.white70 : MColors.ink),
-                            ),
-                          ),
-                          selected: sel,
-                          onSelected: (_) => app.selectAccount(a.id),
-                          selectedColor: MColors.green,
-                          backgroundColor:
-                              isDark ? MColors.darkCard : Colors.white,
-                          side: BorderSide(
-                            color: sel
-                                ? MColors.green
-                                : Theme.of(context).dividerColor,
-                          ),
-                          showCheckmark: false,
-                          labelPadding:
-                              const EdgeInsets.symmetric(horizontal: 10),
-                        ),
-                      );
-                    },
+              offset: const Offset(0, -12),
+              child: SizedBox(
+                height: 212,
+                child: PageView.builder(
+                  controller: _controller,
+                  itemCount: app.accounts.length,
+                  onPageChanged: (int i) {
+                    setState(() => _page = i);
+                    app.selectAccount(app.accounts[i].id);
+                  },
+                  itemBuilder: (BuildContext _, int i) => AccountPageCard(
+                    account: app.accounts[i],
+                    onViewDetails: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) =>
+                            AccountDetailPage(account: app.accounts[i]),
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 14),
+            // ---------- Page indicator dots ----------
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                for (int i = 0; i < app.accounts.length; i++)
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 220),
+                    margin: const EdgeInsets.symmetric(horizontal: 3),
+                    width: i == _page ? 16 : 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: i == _page
+                          ? MColors.green
+                          : MColors.subtle.withOpacity(0.35),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 12),
             // ---------- Quick actions ----------
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -301,7 +311,73 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 22),
+            // ---------- Promo banner (real-app marketing slot) ----------
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              child: GestureDetector(
+                onTap: () => showSnack(context,
+                    'Roshan Digital Account — banking for overseas Pakistanis (demo).'),
+                child: Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [MColors.goldDeep, MColors.gold],
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: MColors.gold.withOpacity(0.35),
+                        blurRadius: 14,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 42,
+                        height: 42,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.22),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(Icons.flight_takeoff_rounded,
+                            color: Colors.white, size: 22),
+                      ),
+                      const SizedBox(width: 12),
+                      const Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Roshan Digital Account',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 13.5,
+                              ),
+                            ),
+                            SizedBox(height: 2),
+                            Text(
+                              'For overseas Pakistanis — open in minutes.',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 11.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Icon(Icons.chevron_right_rounded,
+                          color: Colors.white),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
             // ---------- My accounts ----------
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),

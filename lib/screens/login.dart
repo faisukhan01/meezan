@@ -19,6 +19,28 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _pass = TextEditingController();
   bool _obscure = true;
   bool _busy = false;
+  bool _urdu = false;
+
+  Widget _langOption(String label, bool selected, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+        decoration: BoxDecoration(
+          color: selected ? Colors.white : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 11.5,
+            fontWeight: FontWeight.w700,
+            color: selected ? MColors.green : Colors.white70,
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   void dispose() {
@@ -71,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Container(
                   width: double.infinity,
                   padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).padding.top + 48,
+                    top: MediaQuery.of(context).padding.top + 16,
                     bottom: 36,
                   ),
                   decoration: const BoxDecoration(
@@ -85,11 +107,32 @@ class _LoginScreenState extends State<LoginScreen> {
                       bottomRight: Radius.circular(36),
                     ),
                   ),
-                  child: const Column(
+                  child: Column(
                     children: [
-                      BrandLockup(dark: true, emblemSize: 72),
-                      SizedBox(height: 18),
-                      Text(
+                      // Language toggle (English / اردو) — real-app login feature
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          padding: const EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.12),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              _langOption('English', !_urdu,
+                                  () => setState(() => _urdu = false)),
+                              _langOption('اردو', _urdu,
+                                  () => setState(() => _urdu = true)),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      const BrandLockup(dark: true, emblemSize: 72),
+                      const SizedBox(height: 18),
+                      const Text(
                         'Mobile Banking',
                         style: TextStyle(
                           color: Colors.white70,
@@ -122,18 +165,21 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Sign In',
-                            style: TextStyle(
+                          Text(
+                            _urdu ? 'سائن ان' : 'Sign In',
+                            style: const TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.w800,
                               color: MColors.ink,
                             ),
                           ),
                           const SizedBox(height: 4),
-                          const Text(
-                            'Welcome back! Please enter your credentials.',
-                            style: TextStyle(fontSize: 13, color: MColors.subtle),
+                          Text(
+                            _urdu
+                                ? 'براہ کرم اپنے صارف نام اور پاس ورڈ درج کریں۔'
+                                : 'Welcome back! Please enter your credentials.',
+                            style: const TextStyle(
+                                fontSize: 13, color: MColors.subtle),
                           ),
                           const SizedBox(height: 22),
                           TextField(
