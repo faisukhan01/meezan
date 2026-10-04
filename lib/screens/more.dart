@@ -62,7 +62,7 @@ class MoreScreen extends StatelessWidget {
               gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Color(0xFF0B6E3F), Color(0xFF053D23)],
+                colors: [Color(0xFF00543D), Color(0xFF003D2C)],
               ),
               borderRadius: BorderRadius.circular(18),
             ),

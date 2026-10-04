@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 /// Meezan-style brand palette (original approximation — not official assets).
 class MColors {
-  static const Color green = Color(0xFF0B6E3F);
-  static const Color greenDark = Color(0xFF07522E);
-  static const Color greenDeep = Color(0xFF053D23);
-  static const Color greenBright = Color(0xFF3EA26E);
+  static const Color green = Color(0xFF00543D);
+  static const Color greenDark = Color(0xFF003D2C);
+  static const Color greenDeep = Color(0xFF012B1F);
+  static const Color greenBright = Color(0xFF2E8B63);
   static const Color gold = Color(0xFFC6A45C);
   static const Color goldDeep = Color(0xFFB98F45);
   static const Color goldSoft = Color(0xFFEFE4CB);

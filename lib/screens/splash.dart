@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../core/theme.dart';
 import '../state/app_state.dart';
 import '../widgets/common.dart';
 import 'login.dart';
@@ -31,43 +32,36 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [MeezanSplashTop, MeezanSplashBottom],
-          ),
-        ),
+      backgroundColor: Colors.white,
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const BrandLockup(dark: true),
-            const SizedBox(height: 56),
+          children: const [
+            BrandLockup(emblemSize: 100),
+            SizedBox(height: 56),
             SizedBox(
               width: 26,
               height: 26,
               child: CircularProgressIndicator(
                 strokeWidth: 2.4,
-                color: MeezanSplashGold,
+                color: MColors.gold,
               ),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 18),
+      bottomNavigationBar: Container(
+        color: MColors.green,
+        padding: EdgeInsets.only(
+          top: 14,
+          bottom: MediaQuery.of(context).padding.bottom + 14,
+        ),
         child: const Text(
-          'Unofficial educational UI clone • demo data only',
+          'Educational UI replica • Unaffiliated with Meezan Bank Ltd.',
           textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.white54, fontSize: 11.5),
+          style: TextStyle(color: Colors.white70, fontSize: 11.5),
         ),
       ),
     );
   }
 }
-
-const Color MeezanSplashTop = Color(0xFF0B6E3F);
-const Color MeezanSplashBottom = Color(0xFF053D23);
-const Color MeezanSplashGold = Color(0xFFC6A45C);

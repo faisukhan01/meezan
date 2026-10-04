@@ -40,24 +40,32 @@ class _EmblemPainter extends CustomPainter {
       final Rect r = Offset.zero & size;
       final Path clip = Path()..addOval(r);
       canvas.clipPath(clip);
+      canvas.drawCircle(
+          Offset(w / 2, h / 2), w / 2, Paint()..color = MColors.green);
+      // Gold seal rings
+      final Paint ring = Paint()
+        ..color = MColors.gold
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = w * 0.045;
+      canvas.drawCircle(Offset(w / 2, h / 2), w * 0.435, ring);
+      final Paint ring2 = Paint()
+        ..color = MColors.gold.withOpacity(0.55)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = w * 0.018;
+      canvas.drawCircle(Offset(w / 2, h / 2), w * 0.385, ring2);
     }
 
-    final Paint bg = Paint()..color = MColors.green;
     final Paint gold = Paint()..color = MColors.gold;
     final Paint green = Paint()..color = MColors.green;
 
-    if (circle) {
-      canvas.drawCircle(Offset(w / 2, h / 2), w / 2, bg);
-    }
-
     // Crescent: gold circle with a green offset circle cut out.
-    final Offset c1 = Offset(w * 0.46, h * 0.52);
-    canvas.drawCircle(c1, w * 0.30, gold);
-    final Offset c2 = Offset(w * 0.575, h * 0.47);
-    canvas.drawCircle(c2, w * 0.265, green);
+    final Offset c1 = Offset(w * 0.455, h * 0.535);
+    canvas.drawCircle(c1, w * 0.245, gold);
+    final Offset c2 = Offset(w * 0.55, h * 0.49);
+    canvas.drawCircle(c2, w * 0.215, green);
 
     // Star placed in the crescent opening.
-    _drawStar(canvas, Offset(w * 0.665, h * 0.32), w * 0.085, gold);
+    _drawStar(canvas, Offset(w * 0.635, h * 0.345), w * 0.07, gold);
   }
 
   void _drawStar(Canvas canvas, Offset c, double r, Paint p) {
@@ -97,10 +105,10 @@ class BrandLockup extends StatelessWidget {
         MeezanEmblem(size: emblemSize),
         SizedBox(height: emblemSize * 0.28),
         Text(
-          'MEEZAN',
+          'MEEZAN BANK',
           style: TextStyle(
-            fontSize: emblemSize * 0.32,
-            letterSpacing: emblemSize * 0.10,
+            fontSize: emblemSize * 0.30,
+            letterSpacing: emblemSize * 0.08,
             fontWeight: FontWeight.w800,
             color: dark ? Colors.white : MColors.green,
           ),
