@@ -23,13 +23,15 @@ state management and CI/CD.
 
 | Area | What's included |
 |---|---|
-| Splash & Auth | Branded splash, login with validation, demo biometric login, session persistence |
-| Dashboard | Greeting header, multi-account balance card (hide/show), account switcher chips, 6 quick actions |
+| Splash | White branded splash with gold-seal lockup, green footer strip |
+| Auth | Username/password login (demo), Forgot Username / Forgot Password links, biometric shortcut |
+| MPIN | Real-app style flow — create + confirm 4-digit MPIN on first login, custom keypad quick-login screen on later launches, "use password instead" fallback |
+| Dashboard | "Assalam-o-Alaikum" header with avatar, multi-account balance card (hide/show), account chips, quick menu: Funds Transfer / Utility Bills / Mobile Top Up / Raast QR / Cheque Book / Tax Certificate |
 | Accounts | Account list, total PKR balance, detail page with IBAN copy, mini statement |
-| Transfers | 3 modes — Within Meezan / IBFT (16 banks) / Raast (mobile ID), saved beneficiaries, add beneficiary, purpose of payment, OTP verification (demo OTP `123456`), animated receipt |
-| Payments | 8 bill categories & 20 billers, consumer-number bill form, mobile top-up for Jazz/Zong/Telenor/Ufone, receipts |
+| Transfers | 3 modes — Within Meezan / Other Banks IBFT (16 banks) / Raast (mobile ID), saved beneficiaries, add beneficiary, purpose of payment, OTP verification (demo OTP `123456`), animated receipt |
+| Payments | 8 categories & 20 billers, consumer-number bill form, mobile top-up for Jazz/Zong/Telenor/Ufone, receipts |
 | Raast QR | Decorative QR card generated with CustomPaint |
-| More | Profile card, cards/statements/cheque-book demo actions, settings (light/dark/system theme, biometrics, hide balances, notifications), logout flow |
+| More | Profile card, Debit Cards / Beneficiary Management / Statements / Cheque Book, settings (light/dark/system theme, biometrics, hide balances, notifications), logout flow |
 | Platform | Material 3, light & dark themes, adaptive launcher icon, splash screen |
 
 ## Tech Stack
@@ -79,7 +81,16 @@ Or just push to `main` — CI builds the APK automatically and attaches it to th
 
 - Username: **any** non-empty string
 - Password: **any** string with 4+ characters
+- MPIN: choose any 4 digits on first login (used for quick login afterwards)
 - OTP: **123456**
+
+## Fidelity & Branding Note
+
+This clone reproduces the **structure, flow, colour language and terminology** of
+the Meezan Mobile Banking app (login → MPIN → dashboard → transfers/payments)
+for study purposes. The **official Meezan Bank logo is NOT included** — the
+gold-seal emblem is an original approximation drawn in code so the repository
+stays free of trademarked artwork. All copy is generic banking language.
 
 ## License
 

@@ -11,6 +11,15 @@ import 'payments.dart';
 import 'qr.dart';
 import 'transfer.dart';
 
+String _initials(String name) {
+  final List<String> parts = name.trim().split(RegExp(r'\s+'));
+  if (parts.isEmpty || parts.first.isEmpty) return 'U';
+  final String first = parts.first[0];
+  final String second =
+      parts.length > 1 && parts[1].isNotEmpty ? parts[1][0] : '';
+  return (first + second).toUpperCase();
+}
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -95,7 +104,7 @@ class HomeScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Assalam-u-Alaikum,',
+                              'Assalam-o-Alaikum,',
                               style: TextStyle(
                                 color: Colors.white.withOpacity(0.85),
                                 fontSize: 13,
@@ -115,6 +124,19 @@ class HomeScreen extends StatelessWidget {
                       ),
                       const MeezanEmblem(size: 34),
                       const SizedBox(width: 8),
+                      CircleAvatar(
+                        radius: 17,
+                        backgroundColor: MColors.gold,
+                        child: Text(
+                          _initials(app.userName),
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w800,
+                            color: MColors.greenDeep,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 4),
                       Stack(
                         children: [
                           IconButton(
@@ -223,7 +245,7 @@ class HomeScreen extends StatelessWidget {
                         Expanded(
                           child: QuickAction(
                             icon: Icons.receipt_long_rounded,
-                            label: 'Bill\nPayments',
+                            label: 'Utility\nBills',
                             onTap: () => Navigator.of(context).push(
                               MaterialPageRoute<void>(
                                   builder: (_) => const PaymentsScreen()),
@@ -233,7 +255,7 @@ class HomeScreen extends StatelessWidget {
                         Expanded(
                           child: QuickAction(
                             icon: Icons.phone_android_rounded,
-                            label: 'Mobile\nTop-up',
+                            label: 'Mobile\nTop Up',
                             onTap: () => Navigator.of(context).push(
                               MaterialPageRoute<void>(
                                   builder: (_) => const PaymentsScreen(

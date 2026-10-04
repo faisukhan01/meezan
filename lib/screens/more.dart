@@ -115,11 +115,18 @@ class MoreScreen extends StatelessWidget {
             children: [
               _MenuTile(
                 icon: Icons.credit_card_rounded,
-                title: 'My Cards',
-                subtitle: 'Debit cards linked to your accounts',
+                title: 'My Debit Cards',
+                subtitle: 'Manage limits, block or unblock cards',
                 onTap: () => showSnack(
                     context,
                     '2 debit cards linked • Meezan Visa Classic (demo)'),
+              ),
+              _MenuTile(
+                icon: Icons.people_alt_rounded,
+                title: 'Beneficiary Management',
+                subtitle: 'Saved IBFT & Raast payees',
+                onTap: () => showSnack(context,
+                    '${app.beneficiaries.length} saved beneficiaries (demo).'),
               ),
               _MenuTile(
                 icon: Icons.description_rounded,

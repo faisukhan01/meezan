@@ -39,7 +39,7 @@ class _PaymentsScreenState extends State<PaymentsScreen>
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white60,
           labelStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13.5),
-          tabs: const [Tab(text: 'Bill Payments'), Tab(text: 'Mobile Top-up')],
+          tabs: const [Tab(text: 'Utility Bills'), Tab(text: 'Mobile Top Up')],
         ),
       ),
       body: TabBarView(
